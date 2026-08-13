@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+heartbeats/
+state/
+heal_state.json
+heal_history.jsonl
+DO_NOT_PROCEED.txt
+*.db
+.env
+.secrets
