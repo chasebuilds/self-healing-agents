@@ -126,18 +126,32 @@ def check(beat_name, task_name=None, max_age_h=25.0, probe_scheduler=True,
         if str(info.get("State")).lower() == "disabled":
             return False, "task %s is DISABLED%s" % (task_name, sched)
 
+    # A job running RIGHT NOW has not failed to write a heartbeat; it has
+    # not got there yet. Heartbeats are written at the END of a run by
+    # design, which means any long job is guaranteed to be mid-flight when
+    # some probe looks at it. Without this, a job that takes 45 minutes is
+    # reported as "starting and not finishing" while it is visibly working,
+    # and the first thing anyone does with a watchdog that cries wolf is
+    # stop reading it.
+    running = info and str(info.get("State")).lower() == "running"
+
     if age is None:
         # No heartbeat ever. Before the first run that is expected, so it is
-        # only a finding once the scheduler says it has launched something —
-        # a watchdog that fails on day zero teaches everyone to ignore it.
+        # only a finding once the scheduler says it has launched something.
+        # A watchdog that fails on day zero teaches everyone to ignore it.
         ran = info and (info.get("LastRunTime") or "").strip() not in (
             "", "12/30/1899 12:00:00 AM")
+        if running:
+            return True, "first run is in progress%s" % sched
         if ran:
             return False, ("%s has run but never wrote a heartbeat - the job is "
                            "starting and not finishing%s" % (task_name, sched))
         return True, "no heartbeat yet, and the task has not run%s" % sched
 
     if age > max_age_h:
+        if running:
+            return True, ("last completed run was %.1fh ago and a run is in "
+                          "progress now%s" % (age, sched))
         return False, ("last completed run was %.1fh ago, over the %.0fh bar%s"
                        % (age, max_age_h, sched))
     return True, "last run %.1fh ago%s" % (age, sched)

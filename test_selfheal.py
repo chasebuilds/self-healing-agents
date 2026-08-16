@@ -167,6 +167,55 @@ class TestTaskwatch(unittest.TestCase):
     def test_missing_beat_is_none_not_zero(self):
         self.assertIsNone(taskwatch.hours_since_beat("never", self.dir))
 
+    def _running(self, last_run="01/01/2026 03:00:00"):
+        """Stand in for the scheduler reporting a job as currently running."""
+        real = taskwatch.task_info
+        taskwatch.task_info = lambda name, **kw: {
+            "State": "Running", "LastTaskResult": 267009, "LastRunTime": last_run}
+        return real
+
+    def test_a_job_running_right_now_is_not_a_stale_beat(self):
+        """Heartbeats are written at the END of a run, so a long job is
+        always mid-flight when a probe looks at it. Reporting that as a
+        fault is how a watchdog trains people to ignore it."""
+        old = (datetime.now(timezone.utc) - timedelta(hours=30)).isoformat(timespec="seconds")
+        with open(os.path.join(self.dir, "job.json"), "w", encoding="utf-8") as f:
+            f.write('{"name": "job", "ts": "%s", "detail": {}}' % old)
+        real = self._running()
+        try:
+            good, detail = taskwatch.check("job", "SomeTask", max_age_h=9,
+                                           beat_dir=self.dir)
+        finally:
+            taskwatch.task_info = real
+        self.assertTrue(good, detail)
+        self.assertIn("in progress", detail)
+
+    def test_a_first_run_in_progress_is_not_a_job_that_never_finishes(self):
+        real = self._running()
+        try:
+            good, detail = taskwatch.check("never", "SomeTask", max_age_h=9,
+                                           beat_dir=self.dir)
+        finally:
+            taskwatch.task_info = real
+        self.assertTrue(good, detail)
+        self.assertIn("first run", detail)
+
+    def test_a_stale_beat_with_no_run_in_progress_still_fails(self):
+        """The fix must not swallow the finding it exists to report."""
+        old = (datetime.now(timezone.utc) - timedelta(hours=30)).isoformat(timespec="seconds")
+        with open(os.path.join(self.dir, "job.json"), "w", encoding="utf-8") as f:
+            f.write('{"name": "job", "ts": "%s", "detail": {}}' % old)
+        real = taskwatch.task_info
+        taskwatch.task_info = lambda name, **kw: {
+            "State": "Ready", "LastTaskResult": 0, "LastRunTime": "01/01/2026 03:00:00"}
+        try:
+            good, detail = taskwatch.check("job", "SomeTask", max_age_h=9,
+                                           beat_dir=self.dir)
+        finally:
+            taskwatch.task_info = real
+        self.assertFalse(good)
+        self.assertIn("over the 9h bar", detail)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
