@@ -158,8 +158,7 @@ if held(VENTURE_DIR):
 | `selfheal.py` | The engine: probe, bounded remedy, re-verify, learn. Hold markers and escalation live here. |
 | `reachability.py` | Can this artifact reach a human at all? DNS, HTTP, and per-channel coverage over a population. Read-only GETs; nothing here sends. |
 | `taskwatch.py` | Did the scheduled work actually *finish*? Self-written heartbeats first, the scheduler's own view second and diagnostic only. |
-| `config.py` | Is the one file a human edits still valid? Reports the parse error's line and column, and treats an emptied list separately from a missing key, because an empty list parses fine and silently scores everything zero. |
-| `probes.example.py` | A real probe set: what a dozen invariants for one automated pipeline look like in practice. |
+| `demo_selfheal.py` | One heal run on local state: a heal, a remedy that claims success but is caught on re-check, and a hold marker that blocks downstream work. |
 
 A few implementation details that are load-bearing rather than incidental:
 
