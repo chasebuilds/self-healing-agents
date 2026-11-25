@@ -174,3 +174,11 @@ A private, unattended Python system: several automated pipelines that scout oppo
 This repository is the portable slice: the engine, the reachability and schedule checks, and one real probe set. The business logic, the credentials, the message routing, and the outcome database stay private. Nothing here sends anything, anywhere; every network call is a read-only GET with a short timeout.
 
 Stdlib only. No dependencies.
+
+## More from Chase Builds
+
+- **[sheets-automations](https://github.com/chasebuilds/sheets-automations)**: Google Sheets that send summaries, invoices, overdue reminders and low-stock alerts on their own. ([live demo](https://chasebuilds.github.io/sheets-automations/))
+- **[faceless-video-pipeline](https://github.com/chasebuilds/faceless-video-pipeline)**: Unattended pipeline: scout -> local LLM script -> ffmpeg render -> automated QC -> upload.
+- **[web-data-extractor](https://github.com/chasebuilds/web-data-extractor)**: Public web pages to a checked spreadsheet, only where the site allows it.
+
+[All projects, sorted by industry](https://github.com/chasebuilds) · [chasebuilds.github.io](https://chasebuilds.github.io)
