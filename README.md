@@ -1,5 +1,7 @@
 # self-healing-agents
 
+[![CI](https://github.com/chasebuilds/self-healing-agents/actions/workflows/ci.yml/badge.svg)](https://github.com/chasebuilds/self-healing-agents/actions/workflows/ci.yml) ![Python](https://img.shields.io/badge/python-3.11%20to%203.13-blue) ![License: MIT](https://img.shields.io/badge/license-MIT-green)
+
 Health checks that ask whether unattended work is still worth anything, not just whether it crashed.
 
 ## The idea

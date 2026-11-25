@@ -42,7 +42,7 @@ class TestEngine(unittest.TestCase):
 
     def test_a_remedy_that_lies_is_an_escalate_not_a_heal(self):
         """THE point of the engine. A remedy that reports success while its
-        own probe still fails must never be recorded as healed — that is how
+        own probe still fails must never be recorded as healed, that is how
         a 'permanent guard' ends up written down as shipped when it was
         never written at all.
         """
@@ -120,7 +120,7 @@ class TestEngine(unittest.TestCase):
 
 class TestReachability(unittest.TestCase):
     def test_zero_percent_coverage_is_the_signature(self):
-        """Not a bug in one record — a contradiction between how the
+        """Not a bug in one record, a contradiction between how the
         population was qualified and how it will be contacted. This is the
         0-of-160 case."""
         leads = [{"name": "A", "email": None}, {"name": "B", "email": ""}]

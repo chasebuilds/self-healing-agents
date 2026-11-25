@@ -5,13 +5,13 @@ nothing alarmed, and the gap was only found by a human noticing the absence
 of output.
 
 **A job that stops running looks exactly like a job with nothing to
-report** — and every dashboard stays green, because the dashboards are
+report**, and every dashboard stays green, because the dashboards are
 written BY the thing that stopped.
 
 Two independent signals, in this order:
 
 1. **A heartbeat file the job writes itself, at the END of a run.** This is
-   the one that matters. It proves the code reached the end — not that the
+   the one that matters. It proves the code reached the end, not that the
    scheduler believes it launched something, and not that a process exited
    0. Exit codes are especially weak evidence: plenty of CLIs print a fatal
    error to stdout and still exit 0.
@@ -87,7 +87,7 @@ def task_info(task_name, timeout=20):
     """Windows Task Scheduler's view, or None. Diagnostic only.
 
     Uses PowerShell because `Get-ScheduledTaskInfo` returns stable property
-    names. Returns None on any non-Windows platform, which is correct — the
+    names. Returns None on any non-Windows platform, which is correct, the
     heartbeat is the real signal and it is portable.
     """
     cmd = ["powershell", "-NoProfile", "-NonInteractive", "-Command",

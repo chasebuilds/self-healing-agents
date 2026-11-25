@@ -2,7 +2,7 @@
 
 This is the probe class that unit tests never catch, because the pipeline
 is working correctly. The output is well-formed, the dashboard is green,
-and the thing is worth zero — because the channel it travels down cannot
+and the thing is worth zero, because the channel it travels down cannot
 terminate at a person.
 
 Two real instances, from a cold-outreach system this was extracted from:
@@ -36,7 +36,7 @@ from urllib.parse import urlparse
 UA = "reachability-check/1.0"
 
 # Only these prove a page is gone. A 429 or a 403 is the host ANSWERING,
-# which is evidence it is up — a probe that cries "dead" on throttling gets
+# which is evidence it is up, a probe that cries "dead" on throttling gets
 # muted within a week, and then the day a link really breaks nobody looks.
 DEAD_CODES = (404, 410)
 
@@ -139,7 +139,7 @@ def channel_coverage(records, channel):
     reach. Returns {channel, field, total, reachable, pct, examples}.
 
     **`pct == 0` on a non-empty population is the signature.** It is not a
-    bug in one record — it is a contradiction between how you qualified the
+    bug in one record, it is a contradiction between how you qualified the
     population and how you plan to contact it. Read this number before
     buying anything that assumes the channel works.
     """

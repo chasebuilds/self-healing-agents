@@ -128,7 +128,7 @@ def run(probes, name, root, repair=True, hold=True, on_report=None, on_lesson=No
     """Run every probe, heal what is safely healable, report the rest.
 
     `on_report(report)` and `on_lesson(probe, detail)` are optional
-    callbacks — wire them to your own notifier and notes store. The engine
+    callbacks, wire them to your own notifier and notes store. The engine
     itself performs no I/O beyond the state and history files under `root`.
     """
     os.makedirs(root, exist_ok=True)
@@ -194,7 +194,7 @@ def _learn(on_lesson, probe, detail):
 
 def _write_history(root, name, results):
     """Append-only run log. Read it to answer which invariants keep breaking
-    — a probe that fails repeatedly is a design defect asking to be promoted
+   , a probe that fails repeatedly is a design defect asking to be promoted
     into a real code-level guard."""
     with open(_history_path(root), "a", encoding="utf-8", newline="\n") as f:
         for p, status, detail in results:
