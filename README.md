@@ -4,6 +4,29 @@
 
 Health checks that ask whether unattended work is still worth anything, not just whether it crashed.
 
+## See it run
+
+These probes watch real unattended jobs, so there is nothing to click in a browser. Below are the 21 tests, then [`demo_selfheal.py`](demo_selfheal.py): one heal run against made-up local state, a throwaway web server on 127.0.0.1, an in-memory SQLite table and three invented contacts. Nothing is sent anywhere. Captured from the terminal unedited ([full transcript](docs/run.txt)).
+
+![Terminal: 21 tests pass, then a heal run: a 404 page fails, stale rows are healed, a lying remedy is caught by re-verification, SMS coverage is 0 percent, and a hold marker blocks downstream](docs/run.png)
+
+What to look for:
+
+- `db.stale_rows` fails, its remedy runs, the probe is run again and passes: `HEAL`.
+- `cache.fresh` has a remedy that says it worked but changes nothing. The re-check catches it: `ESC`, not `HEAL`.
+- `channel.sms` finds 0 of 3 contacts reachable by text. Nothing crashed, but the batch is worth nothing, so it is critical and writes the hold marker that downstream steps check with `held()`.
+- The `on_report failed: discord is down` line comes from a test that checks a broken notifier cannot fail the run.
+
+### Run it yourself in 3 commands
+
+Python 3.11 or newer, no packages to install:
+
+```
+git clone https://github.com/chasebuilds/self-healing-agents && cd self-healing-agents
+python -m unittest
+python demo_selfheal.py
+```
+
 ## The idea
 
 An ordinary health check asks: **did anything crash?**

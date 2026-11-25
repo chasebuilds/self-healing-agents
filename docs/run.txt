@@ -1,0 +1,35 @@
+> python -m unittest
+[selfheal] on_report failed: discord is down
+.....................
+----------------------------------------------------------------------
+Ran 21 tests in 0.086s
+
+OK
+[exit 0, 0.3 s]
+
+> python demo_selfheal.py
+  ok   delivery.landing_page          HTTP 200
+  FAIL delivery.thank_you_page        HTTP 404
+       why: the form redirects here after a signup
+  HEAL db.stale_rows                  2 stale rows -> cleared stale rows
+  ESC  cache.fresh                    cache is 3 days old | remedy ran but probe still fails: cache is 3 days old
+       why: a remedy that reports success without fixing anything
+  ok   channel.email                  33% reachable by email (1/3) Granite Tools: email=''; Fern Hollow Farm: email='fern hollow farm'
+  FAIL channel.sms                    0% reachable by sms (0/3) Harbor Coffee: phone=''; Granite Tools: phone='555 0100'; Fern Hollow Farm: phone=''
+       why: 0 reachable means the whole SMS batch is worth nothing
+
+6 probes: 2 pass, 1 healed, 2 failed, 1 escalated
+HOLD: delivery.thank_you_page, channel.sms (DO_NOT_PROCEED.txt written, downstream blocked)
+
+exit code 1; downstream gate held(): BLOCKED
+HOLD written 2026-11-25T11:08:39+00:00 by selfheal. Do not proceed.
+
+- [FAIL] delivery.thank_you_page
+    HTTP 404
+    why it matters: the form redirects here after a signup
+- [FAIL] channel.sms
+    0% reachable by sms (0/3) Harbor Coffee: phone=''; Granite Tools: phone='555 0100'; Fern Hollow Farm: phone=''
+    why it matters: 0 reachable means the whole SMS batch is worth nothing
+
+Clear it by fixing the above and re-running; this file is rewritten every run.
+[exit 0, 0.3 s]
